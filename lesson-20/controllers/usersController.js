@@ -105,6 +105,59 @@ module.exports = {
    * Listing 20.6 (p. 294)
    * edit와 update 액션 추가
    */
+edit: (req,res,next) =>{
+  let userId = req.params.id;
+  User.findById(userId)
+  .then(user =>{
+    res.render("users/edit",{
+      user:user
+    });
+    next();
+  })
+  .catch(error=>{
+    console.log(`error fetching user by id: ${error.message}`);
+    next(error);
+  });
+},
+update: (req, res, next) => {
+  let usetId =req.params.id
+  userParams = {
+    name: {
+      first: req.body.first,
+      last: req.body.last,
+    },
+    email: req.body.email,
+    username: req.body.username,
+    password: req.body.password,
+    profileImg: req.body.profileImg,
+  };
+  // 폼 파라미터로 사용자 생성
+  User.findByIdAndUpdate(userId,{
+    $set: userParams
+  })
+    .then((user) => {
+      res.locals.redirect = `/users/${userId}`;
+      res.locals.user = user;
+      next();
+    })
+    .catch((error) => {
+      console.log(`Error updat uingser: ${error.message}`);
+      next(error);
+    });
+},
+
+delete: (req,res,next) =>{
+  let userId = req.params.id;
+  User.findByIdAndRemove(userId)
+  .then(() =>{
+    res.locals.redirect="/users";
+  
+  })
+  .catch(error=>{
+    console.log(`error fetching user by id: ${error.message}`);
+    next(error);
+  });
+},
   /**
    * @TODO: edit, update 액션 추가
    */
